@@ -1,0 +1,33 @@
+float $minTime = `playbackOptions -q -minTime`;
+float $maxTime = `playbackOptions -q -maxTime`;
+
+file -f -options "v=0;"  -ignoreVersion  -typ "mayaAscii" -o "Z:/marza/proj/sora/shot/rYYY/_BaseScene/rYYY_c000_line.ma";
+
+playbackOptions -minTime $minTime -ast $minTime -maxTime $maxTime -aet $maxTime;
+
+setProject "Z:/marza/proj/sora/shot/rYYY/XXX";
+
+file -import -type "mayaAscii"  -ignoreVersion -mergeNamespacesOnClash false -rpr "AE" -options "v=0;"  -pr 
+"Z:/marza/proj/sora/shot/rYYY/XXX/anim/RenderFiles/camera_cXXX.ma";
+
+DeleteAllImagePlanes;
+
+if (`objExists camera_grp`)
+  {
+  select camera_grp;
+    } else {
+  select AE_camera_grp;
+  };
+
+pickWalk -d down;
+
+rename "rYYY_cXXX_line";
+
+select -r defaultRenderGlobals;
+setAttr "frontShape.renderable" 0;
+setAttr "perspShape.renderable" 0;
+setAttr "sideShape.renderable" 0;
+setAttr "topShape.renderable" 0;
+setAttr "rYYY_cXXX_lineShape.renderable" 1;
+setAttr "defaultRenderGlobals.startFrame" $minTime;
+setAttr "defaultRenderGlobals.endFrame" $maxTime;

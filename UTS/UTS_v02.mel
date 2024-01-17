@@ -1,0 +1,233 @@
+  $fenetre = "UTS";
+  $nameFenetre = "使う前にFBXフォルダー作らなければなりません！！";
+  if ( `window -exists $fenetre` )
+  {
+  	deleteUI $fenetre;
+  }
+  
+  window -t $nameFenetre -width 100 -height 100 $fenetre ;
+  columnLayout;
+  
+    
+  global string $numberCtrlName1;
+  $numberCtrlName1 = `textFieldGrp -label "cutScene (SH02)"`;
+  
+  global string $numberCtrlName2;
+  $numberCtrlName2 = `textFieldGrp -label "cutName (SK06_01_01_t01)"`;
+  
+  button -l "Tora Clean" -w 200 -c "toraClean";
+  button -l "Tora FBX Export" -w 200 -c "toraFBX";
+  button -l "Ushio Clean" -w 200 -c "ushioClean";
+  button -l "Ushio FBX Export" -w 200 -c "ushioFBX";
+      
+  showWindow $fenetre;
+  
+  proc toraClean ()
+  {
+     	
+    source channelBoxCommand.mel;
+    
+    currentUnit -time ntsc;
+    
+    select -r all_Gp ;
+    select -add tora_201127_Lv1_v02_002 ;
+    select -add honma_ROM_t01 ;
+    doDelete;
+    rename "Skeleton_GP" "Reference";
+
+    joint -e -apa -ch Hips;
+    select -r Hips ;
+    duplicate -rr;
+    select -r Hips1 ;
+    select -hierarchy;
+    searchReplaceNames "$" "_v02" "selected";
+    rename "Hips1_v02" "Hips_v02";
+
+    connectAttr -f Hips.translate Hips_v02.translate;
+    connectAttr -f Hips.rotate Hips_v02.rotate;
+    select -r LeftUpLeg ;
+    select -add Spine0 ;
+    select -add RightUpLeg ;
+    select -hierarchy;
+    
+    string $pyCall = "sel=cmds.ls(sl=True)\nfor X in sel:cmds.connectAttr(X+\".r\",X+\"_v02.r\")";
+    python ($pyCall);
+    
+    CBdeleteConnection "RightForeArm_v02.rx";
+    CBdeleteConnection "LeftLeg_v02.rx";
+    CBdeleteConnection "RightLeg_v02.rx";
+    CBdeleteConnection "LeftForeArm_v02.rx";
+    CBdeleteConnection "RightForeArm_v02.ry";
+    CBdeleteConnection "LeftLeg_v02.ry";
+    CBdeleteConnection "RightLeg_v02.ry";
+    CBdeleteConnection "LeftForeArm_v02.ry";
+    CBdeleteConnection "RightForeArm_v02.rz";
+    CBdeleteConnection "LeftLeg_v02.rz";
+    CBdeleteConnection "RightLeg_v02.rz";
+    CBdeleteConnection "LeftForeArm_v02.rz";
+    select -r LeftForeArm ;
+    select -tgl LeftForeArm_v02 ;
+    parentConstraint -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate x -skipRotate z -weight 1;
+    select -r RightForeArm ;
+    select -tgl RightForeArm_v02 ;
+    parentConstraint -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate x -skipRotate z -weight 1;
+    select -r LeftLeg ;
+    select -tgl LeftLeg_v02 ;
+    parentConstraint -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate y -skipRotate z -weight 1;
+    select -r RightLeg ;
+    select -tgl RightLeg_v02 ;
+    parentConstraint -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate y -skipRotate z -weight 1;
+    
+    select -r Hips ;
+    HideSelectedObjects;
+    doHideObjects true;
+
+    select -r Hips_v02 ;
+    select -hierarchy;
+     
+    float $minTime = `playbackOptions -q -minTime`;
+    float $maxTime = `playbackOptions -q -maxTime`;
+    
+    bakeResults -simulation true -sampleBy 1 -t ($minTime+":"+$maxTime) -disableImplicitControl true -preserveOutsideKeys true -sparseAnimCurveBake false -removeBakedAttributeFromLayer false -removeBakedAnimFromLayer false -bakeOnOverrideLayer false -minimizeRotation true -controlPoints false -shape true;
+    
+    select -r Hips;
+    showHidden -a;
+   
+           }
+           
+  proc toraFBX ()
+  {
+
+  	
+  	global string $numberCtrlName1;
+  	global string $numberCtrlName2;
+    
+  	string $getNumberCtrl1 = `textFieldGrp -q -text ($numberCtrlName1)`;
+  	string $getNumberCtrl2 = `textFieldGrp -q -text ($numberCtrlName2)`;
+  	string $pathTRA = "S:/UTS/01_Works/01_3D/cutScene/" + $getNumberCtrl1 + "/" + $getNumberCtrl2 + "/maya/scenes/FBX_Data/" + "TRA_" + $getNumberCtrl2 + ".fbx";
+       
+    select -r Hips;
+    doDelete;
+    select -r Hips_v02 ;
+    searchReplaceNames "_v02" " " "hierarchy";
+    select -r Reference ;
+    select -hierarchy;
+    file -force -options ";targetTime=4;copies=1;option=replaceCompletely;pictures=0;connect=0;" -typ "FBX export" -pr -es $pathTRA;
+   
+           }
+           
+  proc ushioClean ()
+  {
+  	
+    source channelBoxCommand.mel;
+    
+    select -r cornea_L_geo1 cornea_R_geo1 face_blendShape_eyeBlinkL0 eyeBlinkL face_smile face_majime face_mouth_a face_mouth_o face_mouth_u face_mouth_i face_mouth_e eye_funbari_L mouth_funbari face_blendShape_eyeBlinkR0 eyeBlinkR eye_funbari_R mouth_futekiNaEmi2 eye_futekiNaEmi2_L eye_futekiNaEmi2_R face_eyeIkari face_futekiNaEmi1 face_eye_oSakebi mouth_oSakebi ;
+    select -add kanbe_ROM_t01 ;
+    select -add ushio_Gp ;
+    doDelete;
+    setAttr "Character1_Reference.scaleZ" 1;
+    setAttr "Character1_Reference.scaleX" 1;
+    setAttr "Character1_Reference.scaleY" 1;
+    setAttr "yari_L_PR.scaleZ" 0.1;
+    setAttr "yari_L_PR.scaleX" 0.1;
+    setAttr "yari_L_PR.scaleY" 0.1;
+    select -r Character1_Reference;
+    searchReplaceNames "Character1_" " " "hierarchy";
+    
+    currentUnit -time ntsc;
+     	
+    rename "Spine" "Spine0";
+    rename "Neck" "Neck0";
+    rename "Head" "headTip";
+    rename "Neck1" "Head";
+    
+    joint -e -apa -ch Hips;
+    select -r Hips ;
+    duplicate -rr;
+    select -r Hips1 ;
+    select -hierarchy;
+    searchReplaceNames "$" "_v02" "selected";
+    rename "Hips1_v02" "Hips_v02";
+    
+    connectAttr -f Hips.translate Hips_v02.translate;
+    connectAttr -f Hips.rotate Hips_v02.rotate;
+    select -r LeftUpLeg ;
+    select -add Spine0 ;
+    select -add RightUpLeg ;
+    select -hierarchy;
+    
+    string $pyCall = "sel=cmds.ls(sl=True)\nfor X in sel:cmds.connectAttr(X+\".r\",X+\"_v02.r\")";
+    python ($pyCall);  
+        
+    select -r Hips ;
+    HideSelectedObjects;
+    doHideObjects true;
+    
+    CBdeleteConnection "RightForeArm_v02.rx";
+    CBdeleteConnection "LeftLeg_v02.rx";
+    CBdeleteConnection "RightLeg_v02.rx";
+    CBdeleteConnection "LeftForeArm_v02.rx";
+    CBdeleteConnection "RightForeArm_v02.ry";
+    CBdeleteConnection "LeftLeg_v02.ry";
+    CBdeleteConnection "RightLeg_v02.ry";
+    CBdeleteConnection "LeftForeArm_v02.ry";
+    CBdeleteConnection "RightForeArm_v02.rz";
+    CBdeleteConnection "LeftLeg_v02.rz";
+    CBdeleteConnection "RightLeg_v02.rz";
+    CBdeleteConnection "LeftForeArm_v02.rz";
+    select -r LeftForeArm ;
+    select -tgl LeftForeArm_v02 ;
+    parentConstraint -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate x -skipRotate z -weight 1;
+    select -r RightForeArm ;
+    select -tgl RightForeArm_v02 ;
+    parentConstraint -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate x -skipRotate z -weight 1;
+    select -r LeftLeg ;
+    select -tgl LeftLeg_v02 ;
+    parentConstraint -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate y -skipRotate z -weight 1;
+    select -r RightLeg ;
+    select -tgl RightLeg_v02 ;
+    parentConstraint -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate y -skipRotate z -weight 1;
+    select -r Hips_v02 ;
+    select -tgl yari_L_PR ;
+    select -hierarchy;
+     
+    float $minTime = `playbackOptions -q -minTime`;
+    float $maxTime = `playbackOptions -q -maxTime`;
+    
+    float $minTime = `playbackOptions -q -minTime`;
+    float $maxTime = `playbackOptions -q -maxTime`;
+    
+    bakeResults -simulation true -sampleBy 1 -t ($minTime+":"+$maxTime) -disableImplicitControl true -preserveOutsideKeys true -sparseAnimCurveBake false -removeBakedAttributeFromLayer false -removeBakedAnimFromLayer false -bakeOnOverrideLayer false -minimizeRotation true -controlPoints false -shape true;    
+    
+    select -r Hips;
+    showHidden -a;
+   
+           }
+           
+  proc ushioFBX ()
+  {
+  	
+  	global string $numberCtrlName1;
+  	global string $numberCtrlName2;
+    
+    string $getNumberCtrl1 = `textFieldGrp -q -text ($numberCtrlName1)`;
+  	string $getNumberCtrl2 = `textFieldGrp -q -text ($numberCtrlName2)`;
+    
+  	string $pathUSI = "S:/UTS/01_Works/01_3D/cutScene/" + $getNumberCtrl1 + "/" + $getNumberCtrl2 + "/maya/scenes/FBX_Data/" + "USI_" + $getNumberCtrl2 + ".fbx";
+  	string $pathYRI = "S:/UTS/01_Works/01_3D/cutScene/" + $getNumberCtrl1 + "/" + $getNumberCtrl2 + "/maya/scenes/FBX_Data/" + "YRI_" + $getNumberCtrl2 + ".fbx";
+  	    
+    select -r Hips;
+    doDelete;
+    select -r Hips_v02 ;
+    searchReplaceNames "_v02" " " "hierarchy";
+    select -r Reference ;
+    select -hierarchy;
+    file -force -options ";targetTime=4;copies=1;option=replaceCompletely;pictures=0;connect=0;" -typ "FBX export" -pr -es $pathUSI;
+
+    select -r yari_L_PR ;
+    select -hierarchy;
+    file -force -options ";targetTime=4;copies=1;option=replaceCompletely;pictures=0;connect=0;" -typ "FBX export" -pr -es $pathYRI;
+  
+           }
+                      
+           

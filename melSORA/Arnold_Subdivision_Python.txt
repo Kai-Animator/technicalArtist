@@ -1,0 +1,9 @@
+import maya.cmds as cmds
+
+listSelection = cmds.ls( selection=True)
+childrenSelection = cmds.listRelatives(listSelection, allDescendents=True, noIntermediate=True, fullPath=True)
+geometryShapes = cmds.ls(childrenSelection, type="geometryShape")
+
+for shape in geometryShapes:
+    cmds.setAttr( shape + '.aiSubdivType', 1 )
+    cmds.setAttr( shape + '.aiSubdivIterations', 3 )

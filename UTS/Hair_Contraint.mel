@@ -1,0 +1,24 @@
+for ($x = 1; $x < size($selControler); $x++) {
+     
+    string $getRivet = "rivet_Pin_" + ($x - 1);
+    int $cntrNumber = $x - 1;
+    string $rivetCon = $getRivet + ".ry";
+    CBdeleteConnection $rivetCon;
+    select -r $selControler[$x];
+    select -tgl $getRivet;
+    MatchTranslation;
+    select -r $getRivet;
+    select -tgl $selControler[$x];
+    pointConstraint -mo -weight 1;
+    select -r $getRivet;
+    select -tgl $selControler[$cntrNumber];
+    aimConstraint -mo -weight 1 -aimVector 1 0 0 -upVector 0 1 0 -worldUpType "vector" -worldUpVector 0 1 0;
+}
+    select($selControler);
+    float $minTime = `playbackOptions -q -minTime`;
+    float $maxTime = `playbackOptions -q -maxTime`;
+    
+    bakeResults -simulation true -sampleBy 1 -t ($minTime+":"+$maxTime) -disableImplicitControl true -preserveOutsideKeys true -sparseAnimCurveBake false -removeBakedAttributeFromLayer false -removeBakedAnimFromLayer false -bakeOnOverrideLayer true -minimizeRotation true -controlPoints false -shape true;
+    
+    select -r dynamicConstraint1 nRigid6 nRigid5 nRigid4 nRigid3 nRigid2 nRigid1 nCloth1 nucleus1 polySurface2 polySurface1 Hair_Curve ;
+    doDelete;    

@@ -1,0 +1,57 @@
+string $selControler[] =  `ls -sl`;
+
+    {  
+    
+    string $selection[] = `ls -sl`;
+    float $positions1[] ;
+    string $curvePpints[], $array[];
+    for($i=0;$i<size($selection);$i++)
+       {
+           $positions1 = `xform -q -ws -rp $selection[$i]`;
+           $curvePpints[($i*4)] = "-p";
+           $curvePpints[($i*4)+1] = $positions1[0];
+           $curvePpints[($i*4)+2] = $positions1[1];
+           $curvePpints[($i*4)+3] = $positions1[2];
+       }
+
+   string $curveDataString = stringArrayToString($curvePpints," ");
+   eval curve -d 3 $curveDataString -n Hair_Curve;
+   
+   polyPlane -w 1 -h 0.5 -sx 1 -sy 1 -ax 0 1 0 -cuv 2 -ch 1 -n Hair_Geo;
+   select -add $selection[0] ;
+   MatchTransform;
+   int $countSel = `size($selection)`;
+   polyExtrudeEdge -constructionHistory 1 -keepFacesTogether 1 -divisions ($countSel - 1) -twist 0 -taper 1 -offset 0 -thickness 0 -smoothingAngle 30 -inputCurve Hair_Curve  Hair_Geo.e[2];
+  
+   }
+
+   select -r Hair_Geo.e[2] ;
+   DetachComponent;
+   polySeparate -ch 1 Hair_Geo;
+   parent -w;
+   DeleteHistory;
+   delete -ch;
+   select -r polySurface2 ;
+   createNCloth 0;
+   setAttr "nucleus1.startFrame" -20;
+   setAttr "nucleus1.gravity" 100;
+   setAttr "nucleus1.timeScale" 1;
+   setAttr "nucleus1.spaceScale" 1;
+   select -r BG:ice:ice_ground_flat ;
+   select -add USI:skin_geo ;
+   select -add USI:pants_geo ;
+   select -add USI:shoe_L_geo ;
+   select -add USI:shoe_R_geo ;
+   makeCollideNCloth;
+   select -r nCloth1 ;
+   applyPresetToNode "|nCloth1|nClothShape1" "" "" "C:/Program Files/Autodesk/Maya2018/presets/attrPresets/nCloth/tshirt.mel" 1;
+   setAttr "nRigidShape1.thickness" 0.001;
+   select -r $selControler[0];
+   select -tgl polySurface1 ;
+   parentConstraint -mo -weight 1;
+   select -r polySurfaceShape1.e[3] ;
+   select -tgl polySurface2.e[0] ;
+   createNConstraint pointToPoint 0;
+   int $countSel = `size($selControler)`;
+   source channelBoxCommand.mel;
+   select -r polySurface2.f[0:$countSel - 1] ;

@@ -1,0 +1,93 @@
+//// Secundary Prepare for Render /////
+//// YYY = r1300,r1301... XXX = c001, S001 ////
+
+animLayer -edit -lock 1 BaseAnimation;
+animLayer -edit -lock 0 BaseAnimation;
+
+string $curPane = `getPanel -withFocus`;
+if ($curPane == "scriptEditorPanel1"){
+	$curPane = "modelPanel4";
+}
+string $cam = `modelPanel -q -cam $curPane`;
+string $selcam = `select -r $cam`;
+
+rename "unlock_camera";
+
+CBunlockAttr "unlock_camera.tx";
+CBunlockAttr "unlock_camera.ty";
+CBunlockAttr "unlock_camera.tz";
+CBunlockAttr "unlock_camera.rx";
+CBunlockAttr "unlock_camera.ry";
+CBunlockAttr "unlock_camera.rz";
+CBunlockAttr "unlock_camera.sx";
+CBunlockAttr "unlock_camera.sy";
+CBunlockAttr "unlock_camera.sz";
+CBunlockAttr "unlock_camera.v";
+CBunlockAttr "unlock_cameraShape.hfa";
+CBunlockAttr "unlock_cameraShape.vfa";
+CBunlockAttr "unlock_cameraShape.fl";
+CBunlockAttr "unlock_cameraShape.lsr";
+CBunlockAttr "unlock_cameraShape.fs";
+CBunlockAttr "unlock_cameraShape.fd";
+CBunlockAttr "unlock_cameraShape.sa";
+CBunlockAttr "unlock_cameraShape.coi";
+CBunlockAttr "unlock_cameraShape.lls";
+setAttr "unlock_camera.scaleZ" 1;
+setAttr "unlock_camera.scaleX" 1;
+setAttr "unlock_camera.scaleY" 1;
+
+rename $cam;
+
+pickWalk -d right;
+
+string $selection[] = `ls -selection`;
+
+rename "unlock_int";
+
+CBunlockAttr "unlock_int.tx";
+CBunlockAttr "unlock_int.ty";
+CBunlockAttr "unlock_int.tz";
+CBunlockAttr "unlock_int.rx";
+CBunlockAttr "unlock_int.ry";
+CBunlockAttr "unlock_int.rz";
+CBunlockAttr "unlock_int.sx";
+CBunlockAttr "unlock_int.sy";
+CBunlockAttr "unlock_int.sz";
+CBunlockAttr "unlock_int.v";
+
+rename $selection[0];
+
+pickWalk -d up;
+
+rename "camera_grp";
+
+CBunlockAttr "camera_grp.tx";
+CBunlockAttr "camera_grp.ty";
+CBunlockAttr "camera_grp.tz";
+CBunlockAttr "camera_grp.rx";
+CBunlockAttr "camera_grp.ry";
+CBunlockAttr "camera_grp.rz";
+CBunlockAttr "camera_grp.sx";
+CBunlockAttr "camera_grp.sy";
+CBunlockAttr "camera_grp.sz";
+CBunlockAttr "camera_grp.v";
+CBunlockAttr "camera_grp.ox";
+CBunlockAttr "camera_grp.oy";
+CBunlockAttr "camera_grp.oz";
+CBunlockAttr "camera_grp.tws";
+
+SelectHierarchy;
+
+float $minTime = `playbackOptions -q -minTime`;
+float $maxTime = `playbackOptions -q -maxTime`;
+
+bakeResults -simulation true -sampleBy 1 -t ($minTime
++":"+$maxTime) -disableImplicitControl true -
+preserveOutsideKeys false -sparseAnimCurveBake false -
+removeBakedAttributeFromLayer false -
+removeBakedAnimFromLayer true -bakeOnOverrideLayer 
+false -minimizeRotation true -controlPoints true -shape 
+true;
+ 
+file -force -options "v=0;" -typ "mayaAscii" -pr -es 
+"Z:/marza/proj/sora/shot/rYYY/XXX/anim/RenderFiles/camera_cXXX.ma";

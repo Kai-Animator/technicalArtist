@@ -1,0 +1,8 @@
+float $horShake = `getAttr camera1.schocki_cameraShake`;
+c01xa_move1.translateZ = noise(frame + 50)/200 * $horShake;
+
+float $verShake = `getAttr camera1.schocki_cameraShake`;
+c01xa_move1.translateY = noise(frame + 50)/200 * $verShake;
+
+locator1.CameraShake
+

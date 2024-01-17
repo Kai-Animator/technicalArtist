@@ -1,0 +1,8 @@
+file -f -options "v=0;"  -ignoreVersion  -typ "mayaAscii" -o "Z:/marza/proj/sora/shot/r1303/XXX/anim/r1303_XXX_chara.ma";
+
+select -r ch_all_light ;
+
+SelectHierarchy;
+
+file -force -options "v=0;" -typ "mayaAscii" -pr -es 
+"Z:/marza/proj/sora/shot/r1302/XXX/anim/RenderFiles/light_XXX.ma";

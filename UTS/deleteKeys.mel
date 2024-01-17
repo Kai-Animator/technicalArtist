@@ -1,0 +1,17 @@
+if ( `objExists USI:hair_rig_GP` ) {
+   select -r USI:hair_rig_GP ;
+   select -hi;
+   cutKey -s 1 -at ikBlend;
+   print("Cleaned Ushio Keys.\n");
+} else {
+   print("There is nothing here to clean.");
+}
+
+if ( `objExists TRA:hair_rig_GP`) {
+   select -r TRA:hair_rig_GP ;
+   select -hi;
+   cutKey -s 1 -at ikBlend;
+   print("Cleaned Tora Keys.");
+} else {
+   print("There is nothing here to clean.");
+}

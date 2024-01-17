@@ -1,0 +1,4 @@
+delete ch_all_light ;
+
+file -import -type "mayaAscii"  -ignoreVersion -mergeNamespacesOnClash false -rpr "AE" -options "v=0;"  -pr 
+"Z:/marza/proj/sora/shot/r1302/XXX/anim/RenderFiles/light_XXX.ma";

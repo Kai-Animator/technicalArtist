@@ -1,0 +1,13 @@
+string $fileName = "rYYY_cXXX_chara"; 
+string $path = "Z:/marza/proj/sora/shot/rYYY/XXX/anim/";
+string $spath = "Y:/marza/proj/sora/shot/rYYY/XXX/anim/";
+string $fullName = $path + $fileName;
+string $sfullName = $spath + $fileName;
+
+file -rn $sfullName;
+
+file -f -typ "mayaAscii" -s;
+
+file -rn $fullName;
+
+file -f -typ "mayaAscii" -s;

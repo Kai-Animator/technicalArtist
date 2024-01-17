@@ -1,0 +1,9 @@
+createRenderLayer -name "Ken" -number 1 -noRecurse;
+editRenderLayerMembers -noRecurse Ken kenshiroHero_all_default:element kenshiroHero_all_default:hairs_gp ch_all_light;
+
+createRenderLayer -name "Taien" -number 1 -noRecurse;
+editRenderLayerMembers -noRecurse Taien taienHero_all_default:element taienHero_all_default:hairs_gp ch_all_light;
+
+setAttr defaultRenderLayer.renderable 0;
+
+setAttr -type "string" defaultRenderGlobals.imageFilePrefix "<RenderPass>/<Camera>_<RenderLayer>_<RenderPass>_v001";

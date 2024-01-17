@@ -1,0 +1,8 @@
+float $minTime = `playbackOptions -q -minTime`;
+float $maxTime = `playbackOptions -q -maxTime`;
+
+file -f -options "v=0;"  -ignoreVersion  -typ "mayaAscii" -o "Z:/marza/proj/sora/shot/rYYY/XXX/anim/RenderFiles/rYYY_cXXX_camera_AE.ma";
+
+playbackOptions -minTime $minTime -ast $minTime -maxTime $maxTime -aet $maxTime;
+
+file -f -s;

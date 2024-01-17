@@ -1,0 +1,336 @@
+  $WindowName = "WorldSpace";
+  $WindowNameTitle = "World Space";
+  if ( `window -exists $WindowName` )
+  {
+  	deleteUI $WindowName;
+  }
+  
+  window -t $WindowNameTitle -width 220 -height 100 $WindowName ;
+  columnLayout;  
+  columnLayout -adjustableColumn true;
+       frameLayout -label "World Space" -collapsable 1 -li 100 -mh 6;
+          columnLayout -columnAttach "both" 6 -rowSpacing 5 -columnWidth 200;   
+              button -l "Query World Space" -w 150 -c "worldSpace";
+              button -l "Paste World Space" -w 150 -c "pasteWspace" ;
+              button -l "Key WS & Next Frame" -w 150 -c "pasteNxFrame";  
+              button -l "Key WS Selected Range" -w 150 -c "pasteRange";  
+            setParent ..;
+        setParent ..;
+       frameLayout -label "Fake Constraint" -collapsable 1 -li 83 -mh 6;  
+          columnLayout -columnAttach "both" 5 -rowSpacing 5 -columnWidth 200;   
+              button -l "Query Objects Relation" -w 150 -c "relationSpace";  
+              button -l "Paste Relation" -w 150 -c "pasteRelation";  
+              button -l "Key Relation -> Next Frame" -w 150 -c "pasteNxFrameRel";  
+              button -l "Key Relation Selected Range" -w 150 -c "pasteRangeRel";  
+            setParent ..;
+        setParent ..;
+      
+  showWindow $WindowName;
+  
+  proc worldSpace ()
+  
+  {
+
+    global string $selection[] ;
+    float $positions1[] ;
+    float $rotations1[] ; 
+    global string $transStringX[] ;
+    global string $transStringY[] ;
+    global string $transStringZ[] ;
+    global string $rotStringX[] ;
+    global string $rotStringY[] ;
+    global string $rotStringZ[] ;
+    string $selection[] = `ls -sl`;
+    for($i=0;$i<size($selection);$i++)
+       {
+           $positions1 = `xform -q -ws -t $selection[$i]`;
+           $transStringX[$i] = $positions1[0];
+           $transStringY[$i] = $positions1[1];
+           $transStringZ[$i] = $positions1[2];         
+           
+       }
+
+       for($i=0;$i<size($selection);$i++)
+       {
+           $rotations1 = `xform -q -ws -ro $selection[$i]`;
+           $rotStringX[$i] = $rotations1[0];
+           $rotStringY[$i] = $rotations1[1];
+           $rotStringZ[$i] = $rotations1[2];           
+       }
+
+
+       }
+       
+       proc pasteWspace ()
+       {
+         global string $transStringX[] ;
+         global string $transStringY[] ;
+         global string $transStringZ[] ;
+         global string $rotStringX[] ;
+         global string $rotStringY[] ;
+         global string $rotStringZ[] ;
+         global string $selection[] ;         
+         for($i=0;$i<size($selection);$i++)
+           {
+             xform -ws -t ($transStringX[$i]) ($transStringY[$i]) ($transStringZ[$i]) $selection[$i];
+             xform -ws -ro ($rotStringX[$i]) ($rotStringY[$i]) ($rotStringZ[$i]) $selection[$i];
+           }
+       }
+       
+       proc pasteNxFrame ()
+       {
+         global string $transStringX[] ;
+         global string $transStringY[] ;
+         global string $transStringZ[] ;
+         global string $rotStringX[] ;
+         global string $rotStringY[] ;
+         global string $rotStringZ[] ;
+         global string $selection[] ;
+         for($i=0;$i<size($selection);$i++)
+         {
+             xform -ws -t ($transStringX[$i]) ($transStringY[$i]) ($transStringZ[$i]) $selection[$i];
+             xform -ws -ro ($rotStringX[$i]) ($rotStringY[$i]) ($rotStringZ[$i]) $selection[$i];
+             setKeyframe {$selection[$i]};
+         }
+         nextOrPreviousFrame "next";
+         for($i=0;$i<size($selection);$i++)
+         {
+             xform -ws -t ($transStringX[$i]) ($transStringY[$i]) ($transStringZ[$i]) $selection[$i];
+             xform -ws -ro ($rotStringX[$i]) ($rotStringY[$i]) ($rotStringZ[$i]) $selection[$i];
+         }
+    
+       }
+       
+       proc pasteRange ()
+       {
+         global string $transStringX[] ;
+         global string $transStringY[] ;
+         global string $transStringZ[] ;
+         global string $rotStringX[] ;
+         global string $rotStringY[] ;
+         global string $rotStringZ[] ;
+         global string $selection[] ;
+         global string $gPlayBackSlider;
+         float $rangeArray[2];
+         $rangeArray = `timeControl -q -rangeArray $gPlayBackSlider`;
+         int $sizedValue = $rangeArray[1] - $rangeArray[0];
+         currentTime $rangeArray[0];
+         
+         for ($t=0;$t<$sizedValue;$t++)
+            {
+                 for($i=0;$i<size($selection);$i++)
+                 {
+                     xform -ws -t ($transStringX[$i]) ($transStringY[$i]) ($transStringZ[$i]) $selection[$i];
+                     xform -ws -ro ($rotStringX[$i]) ($rotStringY[$i]) ($rotStringZ[$i]) $selection[$i];
+                     setKeyframe {$selection[$i]};
+                 }
+                 nextOrPreviousFrame "next";
+                 for($i=0;$i<size($selection);$i++)
+                 {
+                     xform -ws -t ($transStringX[$i]) ($transStringY[$i]) ($transStringZ[$i]) $selection[$i];
+                     xform -ws -ro ($rotStringX[$i]) ($rotStringY[$i]) ($rotStringZ[$i]) $selection[$i];
+                 }
+            
+               }
+            }
+            
+  proc relationSpace ()
+  
+  {
+
+    global string $selection[] ;
+    float $positions1[] ;
+    float $rotations1[] ; 
+    global string $transStringX[] ;
+    global string $transStringY[] ;
+    global string $transStringZ[] ;
+    global string $rotStringX[] ;
+    global string $rotStringY[] ;
+    global string $rotStringZ[] ;
+    string $selection[] = `ls -sl`;
+
+    for($i=0;$i<size($selection);$i++)
+       {
+           $positions1 = `xform -q -ws -t $selection[$i]`;
+           $transStringX[$i] = $positions1[0];
+           $transStringY[$i] = $positions1[1];
+           $transStringZ[$i] = $positions1[2];         
+           
+       }
+
+       for($i=0;$i<size($selection);$i++)
+       {
+           $rotations1 = `xform -q -ws -ro $selection[$i]`;
+           $rotStringX[$i] = $rotations1[0];
+           $rotStringY[$i] = $rotations1[1];
+           $rotStringZ[$i] = $rotations1[2];           
+       }
+
+
+       }
+       
+       proc pasteRelation ()
+       {
+        global string $transStringX[] ;
+        global string $transStringY[] ;
+        global string $transStringZ[] ;
+        global string $rotStringX[] ;
+        global string $rotStringY[] ;
+        global string $rotStringZ[] ;
+        global string $selection[] ;         
+        float $positions2[] ;
+        float $rotations2[] ;
+        float $locPos[] ;
+        float $locRot[] ;
+        string $locName = "tempLoc_";
+        int $lastSel = size($selection) - 1;
+
+        $positions2 = `xform -q -ws -t $selection[$lastSel]`;
+        $rotations2 = `xform -q -ws -ro $selection[$lastSel]`;
+        
+        spaceLocator -n ($locName + "Parent");
+        xform -ws -t ($transStringX[$lastSel]) ($transStringY[$lastSel]) ($transStringZ[$lastSel]) ($locName + "Parent");
+        xform -ws -ro ($rotStringX[$lastSel]) ($rotStringY[$lastSel]) ($rotStringZ[$lastSel]) ($locName + "Parent");        
+        
+        for($i=0;$i<size($selection) - 1;$i++)
+          {
+            spaceLocator -n ($locName + $i);
+            xform -ws -t ($transStringX[$i]) ($transStringY[$i]) ($transStringZ[$i]) ($locName + $i);
+            xform -ws -ro ($rotStringX[$i]) ($rotStringY[$i]) ($rotStringZ[$i]) ($locName + $i);
+            parentConstraint -mo -w 1 ($locName + "Parent") ($locName + $i);
+          }
+          
+        xform -ws -t ($positions2[0]) ($positions2[1]) ($positions2[2]) ($locName + "Parent");
+        xform -ws -ro ($rotations2[0]) ($rotations2[1]) ($rotations2[2]) ($locName + "Parent");
+        parentConstraint -mo -w 1 $selection[$lastSel] ($locName + "Parent");
+
+        for($i=0;$i<size($selection) - 1;$i++)
+          {
+            $locPos = `xform -q -ws -t ($locName + $i)`;
+            $locRot = `xform -q -ws -ro ($locName + $i)`;
+            xform -ws -t ($locPos[0]) ($locPos[1]) ($locPos[2]) $selection[$i];
+            xform -ws -ro ($locRot[0]) ($locRot[1]) ($locRot[2]) $selection[$i];
+            delete ($locName + $i);
+          }
+          
+          delete ($locName + "Parent");  
+          select $selection;
+          select -d $selection[$lastSel];
+          
+       }
+
+             proc pasteNxFrameRel ()
+       {
+        global string $transStringX[] ;
+        global string $transStringY[] ;
+        global string $transStringZ[] ;
+        global string $rotStringX[] ;
+        global string $rotStringY[] ;
+        global string $rotStringZ[] ;
+        global string $selection[] ;         
+        float $positions2[] ;
+        float $rotations2[] ;
+        float $locPos[] ;
+        float $locRot[] ;
+        string $locName = "tempLoc_";
+        int $lastSel = size($selection) - 1;
+
+        $positions2 = `xform -q -ws -t $selection[$lastSel]`;
+        $rotations2 = `xform -q -ws -ro $selection[$lastSel]`;
+        
+        spaceLocator -n ($locName + "Parent");
+        xform -ws -t ($transStringX[$lastSel]) ($transStringY[$lastSel]) ($transStringZ[$lastSel]) ($locName + "Parent");
+        xform -ws -ro ($rotStringX[$lastSel]) ($rotStringY[$lastSel]) ($rotStringZ[$lastSel]) ($locName + "Parent");        
+        
+        for($i=0;$i<size($selection) - 1;$i++)
+          {
+            spaceLocator -n ($locName + $i);
+            xform -ws -t ($transStringX[$i]) ($transStringY[$i]) ($transStringZ[$i]) ($locName + $i);
+            xform -ws -ro ($rotStringX[$i]) ($rotStringY[$i]) ($rotStringZ[$i]) ($locName + $i);
+            parentConstraint -mo -w 1 ($locName + "Parent") ($locName + $i);
+          }
+          
+        xform -ws -t ($positions2[0]) ($positions2[1]) ($positions2[2]) ($locName + "Parent");
+        xform -ws -ro ($rotations2[0]) ($rotations2[1]) ($rotations2[2]) ($locName + "Parent");
+        parentConstraint -mo -w 1 $selection[$lastSel] ($locName + "Parent");
+
+        for($i=0;$i<size($selection) - 1;$i++)
+          {
+            $locPos = `xform -q -ws -t ($locName + $i)`;
+            $locRot = `xform -q -ws -ro ($locName + $i)`;
+            xform -ws -t ($locPos[0]) ($locPos[1]) ($locPos[2]) $selection[$i];
+            xform -ws -ro ($locRot[0]) ($locRot[1]) ($locRot[2]) $selection[$i];
+            setKeyframe {$selection[$i]};
+            delete ($locName + $i);
+          }
+          
+          delete ($locName + "Parent");          
+          nextOrPreviousFrame "next";
+          select $selection;
+          select -d $selection[(size($selection)) - 1];
+       }
+
+       proc pasteRangeRel ()
+       {
+        global string $transStringX[] ;
+        global string $transStringY[] ;
+        global string $transStringZ[] ;
+        global string $rotStringX[] ;
+        global string $rotStringY[] ;
+        global string $rotStringZ[] ;
+        global string $selection[] ;
+        global string $gPlayBackSlider;
+        float $rangeArray[2];
+        $rangeArray = `timeControl -q -rangeArray $gPlayBackSlider`;
+        int $sizedValue = $rangeArray[1] - $rangeArray[0];
+        currentTime $rangeArray[0];
+        float $positions2[] ;
+        float $rotations2[] ;
+        float $locPos[] ;
+        float $locRot[] ;
+        string $locName = "tempLoc_";
+        int $lastSel = size($selection) - 1;
+
+        $positions2 = `xform -q -ws -t $selection[$lastSel]`;
+        $rotations2 = `xform -q -ws -ro $selection[$lastSel]`;
+        
+        spaceLocator -n ($locName + "Parent");
+        xform -ws -t ($transStringX[$lastSel]) ($transStringY[$lastSel]) ($transStringZ[$lastSel]) ($locName + "Parent");
+        xform -ws -ro ($rotStringX[$lastSel]) ($rotStringY[$lastSel]) ($rotStringZ[$lastSel]) ($locName + "Parent");        
+        
+        for($i=0;$i<size($selection) - 1;$i++)
+          {
+            spaceLocator -n ($locName + $i);
+            xform -ws -t ($transStringX[$i]) ($transStringY[$i]) ($transStringZ[$i]) ($locName + $i);
+            xform -ws -ro ($rotStringX[$i]) ($rotStringY[$i]) ($rotStringZ[$i]) ($locName + $i);
+            parentConstraint -mo -w 1 ($locName + "Parent") ($locName + $i);
+          }
+          
+        xform -ws -t ($positions2[0]) ($positions2[1]) ($positions2[2]) ($locName + "Parent");
+        xform -ws -ro ($rotations2[0]) ($rotations2[1]) ($rotations2[2]) ($locName + "Parent");
+        parentConstraint -mo -w 1 $selection[$lastSel] ($locName + "Parent");
+            
+         for ($t=0;$t<$sizedValue;$t++)
+            {
+              for($i=0;$i<size($selection) - 1;$i++)
+                {
+                  $locPos = `xform -q -ws -t ($locName + $i)`;
+                  $locRot = `xform -q -ws -ro ($locName + $i)`;
+                  xform -ws -t ($locPos[0]) ($locPos[1]) ($locPos[2]) $selection[$i];
+                  xform -ws -ro ($locRot[0]) ($locRot[1]) ($locRot[2]) $selection[$i];
+                  setKeyframe {$selection[$i]};                           
+                }
+                
+                nextOrPreviousFrame "next";      
+            }
+            
+        for($i=0;$i<size($selection) - 1;$i++)
+        
+                {
+                  delete ($locName + $i);
+                }
+                
+        delete ($locName + "Parent");   
+        select $selection;
+        select -d $selection[$lastSel];
+      } 

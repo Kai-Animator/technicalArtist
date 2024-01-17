@@ -1,0 +1,68 @@
+float $minTime = `playbackOptions -q -minTime`;
+float $maxTime = `playbackOptions -q -maxTime`;
+
+file -f -options "v=0;"  -ignoreVersion  -typ "mayaAscii" -o "Z:/marza/proj/sora/shot/rYYY/_BaseScene/rYYY_c000_BG_noChara.ma";
+
+playbackOptions -minTime $minTime -ast $minTime -maxTime $maxTime -aet $maxTime;
+
+setProject "Z:/marza/proj/sora/shot/rYYY/XXX";
+
+file -import -type "mayaAscii"  -ignoreVersion -mergeNamespacesOnClash false -rpr "AE" -options "v=0;"  -pr 
+"Z:/marza/proj/sora/shot/rYYY/XXX/anim/RenderFiles/camera_cXXX.ma";
+
+file -import -type "mayaAscii"  -ignoreVersion -mergeNamespacesOnClash false -rpr "AE" -options "v=0;"  -pr 
+"Z:/marza/proj/sora/shot/rYYY/XXX/anim/RenderFiles/camera_cXXX.ma";
+
+DeleteAllImagePlanes;
+
+select camera_grp;
+
+pickWalk -d down;
+
+rename "rYYY_cXXX_envMg";
+
+select "AE_camera_grp";
+
+pickWalk -d down;
+
+rename "rYYY_cXXX_camera_AE";
+
+pickWalk -d right;
+
+rename "rYYY_cXXX_camera_AE_Interest";
+
+select -r defaultRenderGlobals;
+setAttr "frontShape.renderable" 0;
+setAttr "perspShape.renderable" 0;
+setAttr "sideShape.renderable" 0;
+setAttr "topShape.renderable" 0;
+setAttr "rYYY_cXXX_envMgShape.renderable" 1;
+setAttr "rYYY_cXXX_camera_AEShape.renderable" 0;
+setAttr "defaultRenderGlobals.startFrame" $minTime;
+setAttr "defaultRenderGlobals.endFrame" $maxTime;
+
+CreateLocator;
+rename "Null_1";
+
+CreateLocator;
+rename "Null_2"; 
+
+select -r rYYY_cXXX_camera_AE;
+
+select -tgl Null_1;
+
+parentConstraint -weight 1;
+
+select -r rYYY_cXXX_camera_AE_Interest;
+
+select -tgl Null_2;
+
+parentConstraint -weight 1;
+
+parent Null_1 Null_2 AE_camera_grp;
+
+select -r AE_camera_grp rYYY_cXXX_camera_AE rYYY_cXXX_camera_AE_Interest Null_1 Null_2 Null_1_parentConstraint1 Null_2_parentConstraint1 
+;
+
+file -force -options "v=0;" -typ "mayaAscii" -pr -es 
+"Z:/marza/proj/sora/shot/rYYY/XXX/anim/RenderFiles/rYYY_cXXX_camera_AE.ma";

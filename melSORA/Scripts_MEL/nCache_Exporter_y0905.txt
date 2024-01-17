@@ -1,0 +1,91 @@
+  $fenetre = "nCache";
+  $nameFenetre = "SORA nCache Render Export";
+  if ( `window -exists $fenetre` )
+  {
+  	deleteUI $fenetre;
+  }
+  
+  window -t $nameFenetre -width 100 -height 100 $fenetre ;
+  columnLayout;
+  
+    
+  global string $numberCtrlName1;
+  $numberCtrlName1 = `textFieldGrp -label "Scene Name (KEN ONLY)"`;
+  
+  global string $numberCtrlName2;
+  $numberCtrlName2 = `textFieldGrp -label "Cut Number"`;
+  
+  button -l "Kenshiro" -w 200 -c "kenNcache";
+  button -l "Hien" -w 200 -c "hienNcache";
+  button -l "Taien" -w 200 -c "taienNcache";
+  button -l "Kyoun" -w 200 -c "kyounNcache"; 
+  
+  showWindow $fenetre;
+  
+  proc kenNcache ()
+  {
+  	global string $numberCtrlName1;
+  	global string $numberCtrlName2;
+    
+    string $getNumberCtrl1 = `textFieldGrp -q -text ($numberCtrlName1)`;
+  	string $getNumberCtrl2 = `textFieldGrp -q -text ($numberCtrlName2)`;
+    
+    string $path = "Z:/marza/proj/sora/shot/y0905/" + $getNumberCtrl2 + "/anim/nCache/RenderCache" ; 
+     	
+  	select -r kenshiroHero_all_default:jacket_lnrGeo ;
+    select -add kenshiroHero_all_default:skirt_rigGeo ;
+    
+    doCreateGeometryCache 6 { "2", "1", "10", "OneFile", "1", ($path),"1","Kenshiro_RenderCache","0", "export", "0", "1", "1","0","1","mcx","0" } ;
+   
+           }
+           
+  proc hienNcache ()
+  {
+  	
+  	global string $numberCtrlName2;
+    
+  	string $getNumberCtrl2 = `textFieldGrp -q -text ($numberCtrlName2)`;
+    
+    string $path = "Z:/marza/proj/sora/shot/y0905/" + $getNumberCtrl2 + "/anim/nCache/RenderCache" ; 
+     	
+   select -r hienChina_all_default:hienChinaClothA_geo hienChina_all_default:hienChinaClothB_geo hienChina_all_default:hienChinaClothC_geo hienChina_all_default:hienChinaButtonAA_geo hienChina_all_default:hienChinaButtonAB_geo 
+             hienChina_all_default:hienChinaButtonA_geo hienChina_all_default:hienChinaButtonBA_geo hienChina_all_default:hienChinaButtonBB_geo hienChina_all_default:hienChinaButtonB_geo hienChina_all_default:hienChinaButtonCA_geo
+             hienChina_all_default:hienChinaButtonCB_geo hienChina_all_default:hienChinaButtonC_geo hienChina_all_default:hienChinaButtonDA_geo hienChina_all_default:hienChinaButtonDB_geo hienChina_all_default:hienChinaButtonD_geo
+             hienChina_all_default:hienChinaButtonEA_geo hienChina_all_default:hienChinaButtonEB_geo ;
+
+    
+    doCreateGeometryCache 6 { "2", "1", "10", "OneFile", "1", ($path),"1","Hien_RenderCache","0", "export", "0", "1", "1","0","1","mcx","0" } ;
+   
+           }
+           
+  proc kyounNcache ()
+  {
+  	
+  	global string $numberCtrlName2;
+    
+    string $getNumberCtrl2 = `textFieldGrp -q -text ($numberCtrlName2)`;
+    
+    string $path = "Z:/marza/proj/sora/shot/y0905/" + $getNumberCtrl2 + "/anim/nCache/RenderCache" ; 
+     	
+    select -r kyounHero_all_default:cloak_deformGeo kyounHero_all_default:jacket_lnrGeo;
+    
+    doCreateGeometryCache 6 { "2", "1", "10", "OneFile", "1", ($path),"1","Kyoun_RenderCache","0", "export", "0", "1", "1","0","1","mcx","0" } ;
+   
+           }
+ 
+   proc taienNcache ()
+  {
+  	
+  	global string $numberCtrlName2;
+    
+    string $getNumberCtrl2 = `textFieldGrp -q -text ($numberCtrlName2)`;
+    
+    string $path = "Z:/marza/proj/sora/shot/y0905/" + $getNumberCtrl2 + "/anim/nCache/RenderCache" ; 
+     	
+    select -r taienHero_all_default:jacket_lnrGeo taienHero_all_default:skirt_lnrGeo ;
+    
+    doCreateGeometryCache 6 { "2", "1", "10", "OneFile", "1", ($path),"1","Taien_RenderCache","0", "export", "0", "1", "1","0","1","mcx","0" } ;
+   
+           }
+                         
+             
